@@ -1,0 +1,19 @@
+.errorCard {
+  color: rgb(132, 26, 9);
+  background-color: rgb(251, 233, 231);
+  border-color: rgb(220, 44, 16);
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  width: 100%;
+  text-align: center;
+}
+
+.errorText {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: black;
+}
