@@ -19,12 +19,9 @@ const PlayerCard = ({ playerNum, color, setColor }) => {
         >
           {color !== "" ? color : "Choose Color"}
           {openDropdown ? (
-            <FontAwesomeIcon icon={faCaretUp} style={{ marginLeft: "15px" }} />
+            <FontAwesomeIcon icon={faCaretUp} className={styles.arrowIcon} />
           ) : (
-            <FontAwesomeIcon
-              icon={faCaretDown}
-              style={{ marginLeft: "15px" }}
-            />
+            <FontAwesomeIcon icon={faCaretDown} className={styles.arrowIcon} />
           )}
         </button>
         {openDropdown && (

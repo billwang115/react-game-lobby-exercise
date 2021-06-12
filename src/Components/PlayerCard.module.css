@@ -41,6 +41,10 @@
   background-color: MintCream;
 }
 
+.arrowIcon {
+  margin-left: 15px;
+}
+
 .dropdownList {
   list-style-type: none;
   position: absolute;
