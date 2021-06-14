@@ -1,11 +1,12 @@
 import "./App.css";
-import GameLobby from "./Components/GameLobby";
+import Routes from "./routes/Routes/Routes";
+import AuthProvider from "./contexts/AuthProvider";
 
 function App() {
   return (
-    <div>
-      <GameLobby />
-    </div>
+    <AuthProvider>
+      <Routes />
+    </AuthProvider>
   );
 }
 

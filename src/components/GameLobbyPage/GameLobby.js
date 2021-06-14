@@ -1,7 +1,8 @@
 import styles from "./GameLobby.module.css";
 import PlayerCard from "./PlayerCard";
 import ErrorMessage from "./ErrorMessage";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../../contexts/AuthProvider";
 
 const GameLobby = () => {
   const [playerColors, setPlayerColors] = useState(["", "", "", ""]);
@@ -25,11 +26,14 @@ const GameLobby = () => {
 
   const [error, setError] = useState("");
 
+  const { currentUser } = useContext(AuthContext);
+
   return (
     <div id={styles.gameLobbyMenu}>
       <div className={styles.titleContainer}>
         <h1 className={styles.title}>Game Lobby</h1>
       </div>
+      {error !== "" && <ErrorMessage message={error} />}
       <div id={styles.playerContainer}>
         <PlayerCard
           playerNum={1}
@@ -52,7 +56,6 @@ const GameLobby = () => {
           setColor={(color) => setPlayerColor(color, 3)}
         />
       </div>
-      {error !== "" && <ErrorMessage message={error} />}
     </div>
   );
 };
