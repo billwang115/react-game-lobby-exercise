@@ -24,37 +24,21 @@ const GameLobby = () => {
       setError(err.message);
     }
   };
-  /*const [playerColors, setPlayerColors] = useState(["", "", "", ""]);
-  const setPlayerColor = (color, index) => {
-    setPlayerColors(
-      playerColors.map((playerColor, playerIndex) =>
-        playerIndex === index && !checkColorChosen(color) ? color : playerColor
-      )
-    );
-  };
 
-  const checkColorChosen = (color) => {
-    if (color !== "" && playerColors.includes(color)) {
-      setError("Two players cannot choose the same color");
-      return true;
-    } else {
-      setError("");
-      return false;
-    }
-  };
-  */
   const getCurrentPlayerColor = func.httpsCallable("getCurrentPlayerColor");
   const getNonLoggedInColors = func.httpsCallable("getNonLoggedInColors");
-  const [colorMap, setColorMap] = useState({});
+  const [colorMap, setColorMap] = useState([]);
   const initColorMap = async () => {
     setColorMap((await getNonLoggedInColors()).data);
   };
-  const playerCards = Object.values(colorMap).map((value) => (
-    <PlayerCard loggedIn={false} color={value} setColor={null} />
+  const playerCards = colorMap.map(([key, value]) => (
+    <PlayerCard key={key} loggedIn={false} color={value} setColor={null} />
   ));
+
   const [currentColor, setCurrentColor] = useState("");
   const initPlayerColor = async () =>
     setCurrentColor((await getCurrentPlayerColor()).data);
+
   useEffect(() => {
     initPlayerColor();
     initColorMap();

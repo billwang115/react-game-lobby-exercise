@@ -32,6 +32,7 @@
   font-size: 24px;
   border: 2px solid grey;
   border-radius: 10px;
+  box-shadow: rgb(0 0 0 / 50%) 0px 2px 4px;
   color: black;
   padding: 18px 16px;
   background-color: white;
@@ -39,12 +40,13 @@
 }
 
 .dropBtn:hover {
-  background-color: MintCream;
+  background-color: rgb(227, 252, 239);
 }
 
 .dropBtn:disabled {
   background-color: #d3d3d3;
-  color: rgba(0, 0, 0, 0.26);
+  color: rgba(0, 0, 0, 0.4);
+  border-width: 1px;
   cursor: default;
 }
 
