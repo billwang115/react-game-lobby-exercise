@@ -2,10 +2,29 @@ import styles from "./GameLobby.module.css";
 import Header from "../Header/Header";
 import PlayerCard from "./PlayerCard";
 import ErrorMessage from "./ErrorMessage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { func } from "../../constants/Firebase";
 
 const GameLobby = () => {
-  const [playerColors, setPlayerColors] = useState(["", "", "", ""]);
+  const [error, setError] = useState("");
+  const addPlayerColor = func.httpsCallable("addPlayerColor");
+  const deselectPlayerColor = func.httpsCallable("deselectPlayerColor");
+
+  const setPlayerColor = async (color) => {
+    setError("");
+    try {
+      if (color !== "") {
+        await addPlayerColor({ color: color });
+        setCurrentColor(color);
+      } else {
+        await deselectPlayerColor();
+        setCurrentColor("");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+  /*const [playerColors, setPlayerColors] = useState(["", "", "", ""]);
   const setPlayerColor = (color, index) => {
     setPlayerColors(
       playerColors.map((playerColor, playerIndex) =>
@@ -23,8 +42,23 @@ const GameLobby = () => {
       return false;
     }
   };
-
-  const [error, setError] = useState("");
+  */
+  const getCurrentPlayerColor = func.httpsCallable("getCurrentPlayerColor");
+  const getNonLoggedInColors = func.httpsCallable("getNonLoggedInColors");
+  const [colorMap, setColorMap] = useState({});
+  const initColorMap = async () => {
+    setColorMap((await getNonLoggedInColors()).data);
+  };
+  const playerCards = Object.values(colorMap).map((value) => (
+    <PlayerCard loggedIn={false} color={value} setColor={null} />
+  ));
+  const [currentColor, setCurrentColor] = useState("");
+  const initPlayerColor = async () =>
+    setCurrentColor((await getCurrentPlayerColor()).data);
+  useEffect(() => {
+    initPlayerColor();
+    initColorMap();
+  }, []);
 
   return (
     <div>
@@ -36,25 +70,11 @@ const GameLobby = () => {
         {error !== "" && <ErrorMessage message={error} />}
         <div id={styles.playerContainer}>
           <PlayerCard
-            playerNum={1}
-            color={playerColors[0]}
-            setColor={(color) => setPlayerColor(color, 0)}
+            loggedIn={true}
+            color={currentColor}
+            setColor={setPlayerColor}
           />
-          <PlayerCard
-            playerNum={2}
-            color={playerColors[1]}
-            setColor={(color) => setPlayerColor(color, 1)}
-          />
-          <PlayerCard
-            playerNum={3}
-            color={playerColors[2]}
-            setColor={(color) => setPlayerColor(color, 2)}
-          />
-          <PlayerCard
-            playerNum={4}
-            color={playerColors[3]}
-            setColor={(color) => setPlayerColor(color, 3)}
-          />
+          {playerCards}
         </div>
       </div>
     </div>

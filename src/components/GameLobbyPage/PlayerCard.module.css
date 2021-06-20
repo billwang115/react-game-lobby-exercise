@@ -1,11 +1,12 @@
 .playerCard {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
-  width: 40%;
+  max-width: 500px;
   border: 2px solid grey;
   border-radius: 10px;
   padding: 20px;
   text-align: center;
+  margin: auto;
 }
 
 .cardTitle {
@@ -39,6 +40,12 @@
 
 .dropBtn:hover {
   background-color: MintCream;
+}
+
+.dropBtn:disabled {
+  background-color: #d3d3d3;
+  color: rgba(0, 0, 0, 0.26);
+  cursor: default;
 }
 
 .arrowIcon {
