@@ -3,12 +3,14 @@ import Header from "../Header/Header";
 import { useState, useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../../contexts/AuthProvider";
 import Alert from "@material-ui/lab/Alert";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { func, storage } from "../../constants/Firebase";
 
 const ProfilePage = () => {
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
+  const [progress, setProgress] = useState(0);
   const { currentUser } = useContext(AuthContext);
   const uploadRef = useRef();
 
@@ -30,7 +32,7 @@ const ProfilePage = () => {
 
   const updateProfileImageUrl = func.httpsCallable("updateProfileImageUrl");
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     setError("");
     if (image === null) {
       setError("Please upload a valid image");
@@ -38,15 +40,27 @@ const ProfilePage = () => {
     }
 
     const profileRef = storage.ref(`users/${currentUser.uid}/profilePic.png`);
-    try {
-      await profileRef.put(image);
-      const downloadUrl = await profileRef.getDownloadURL();
-      await updateProfileImageUrl({ Url: downloadUrl });
-      setImage(null);
-      uploadRef.current.value = "";
-    } catch (err) {
-      setError(err.message);
-    }
+    const uploadTask = profileRef.put(image);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setProgress(progress);
+      },
+      (error) => {
+        setError(error);
+      },
+      async () => {
+        const downloadUrl = await profileRef.getDownloadURL();
+        await updateProfileImageUrl({ Url: downloadUrl });
+        setImage(null);
+        uploadRef.current.value = "";
+        setProgress(0);
+      }
+    );
   };
 
   const getProfileImagebyId = func.httpsCallable("getProfileImagebyId");
@@ -73,13 +87,7 @@ const ProfilePage = () => {
       <section>
         <div className={styles.sectionContent}>
           <div className={styles.imgContainer}>
-            <img
-              src={imageUrl}
-              alt="profile"
-              width="100%"
-              height="inherit"
-              style={{ objectFit: "cover" }}
-            />
+            <img src={imageUrl} alt="profile" className={styles.profileImg} />
           </div>
           <div className={styles.uploadButtonContainer}>
             <input
@@ -89,7 +97,15 @@ const ProfilePage = () => {
               className={styles.chooseFile}
             />
             <button className={styles.uploadButton} onClick={handleUpload}>
-              Upload new image
+              {progress === 0 ? (
+                "Upload new image"
+              ) : (
+                <CircularProgress
+                  color="white"
+                  variant="determinate"
+                  value={progress}
+                />
+              )}
             </button>
           </div>
           <div className={styles.noticeTextContainer}>

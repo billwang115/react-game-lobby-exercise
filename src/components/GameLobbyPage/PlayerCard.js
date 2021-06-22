@@ -5,14 +5,54 @@ import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { func } from "../../constants/Firebase";
 
-const PlayerCard = ({ loggedIn, color, setColor }) => {
+const PlayerCard = ({ loggedIn, userId, setError }) => {
   const [openDropdown, setOpenDropdown] = useState(false);
   const getColors = func.httpsCallable("getColorOptions");
   const [colors, setColors] = useState([]);
   const initColors = async () => setColors((await getColors()).data);
 
+  const getProfileImagebyId = func.httpsCallable("getProfileImagebyId");
+  const [imageUrl, setImageUrl] = useState("");
+  const initImage = async () => {
+    try {
+      setImageUrl((await getProfileImagebyId({ id: userId })).data);
+    } catch (err) {
+      setImageUrl("");
+    }
+  };
+
+  const getPlayerColor = func.httpsCallable("getPlayerColor");
+  const [selectedColor, setSelectedColor] = useState("");
+  const initSelectedColor = async () => {
+    try {
+      setSelectedColor((await getPlayerColor({ id: userId })).data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const addPlayerColor = func.httpsCallable("addPlayerColor");
+  const deselectPlayerColor = func.httpsCallable("deselectPlayerColor");
+
+  const setPlayerColor = async (color) => {
+    setError("");
+    try {
+      if (color !== "") {
+        await addPlayerColor({ color: color });
+        setSelectedColor(color);
+      } else {
+        await deselectPlayerColor();
+        setSelectedColor("");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   useEffect(() => {
     initColors();
+    initImage();
+    initSelectedColor();
   }, []);
 
   return (
@@ -20,9 +60,10 @@ const PlayerCard = ({ loggedIn, color, setColor }) => {
       <div
         className={styles.playerCard}
         style={{
-          backgroundColor: color,
+          backgroundColor: selectedColor,
         }}
       >
+        <img src={imageUrl} alt="profile" className={styles.profileImg} />
         <h2 className={styles.cardTitle}>
           {!loggedIn ? "Anon-Player" : "You"}
         </h2>
@@ -33,7 +74,11 @@ const PlayerCard = ({ loggedIn, color, setColor }) => {
             onClick={() => setOpenDropdown(!openDropdown)}
             disabled={!loggedIn}
           >
-            {color !== "" ? color : loggedIn ? "Choose Color" : "No Color"}
+            {selectedColor !== ""
+              ? selectedColor
+              : loggedIn
+              ? "Choose Color"
+              : "No Color"}
             {loggedIn &&
               (openDropdown ? (
                 <FontAwesomeIcon
@@ -52,7 +97,7 @@ const PlayerCard = ({ loggedIn, color, setColor }) => {
               <li
                 key="deselect"
                 onClick={() => {
-                  setColor("");
+                  setPlayerColor("");
                   setOpenDropdown(!openDropdown);
                 }}
               >
@@ -62,7 +107,7 @@ const PlayerCard = ({ loggedIn, color, setColor }) => {
                 <li
                   key={color.toString()}
                   onClick={() => {
-                    setColor(color);
+                    setPlayerColor(color);
                     setOpenDropdown(!openDropdown);
                   }}
                 >

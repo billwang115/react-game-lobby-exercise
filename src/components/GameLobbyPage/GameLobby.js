@@ -2,46 +2,30 @@ import styles from "./GameLobby.module.css";
 import Header from "../Header/Header";
 import PlayerCard from "./PlayerCard";
 import ErrorMessage from "./ErrorMessage";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../../contexts/AuthProvider";
 import { func } from "../../constants/Firebase";
 
 const GameLobby = () => {
+  const { currentUser } = useContext(AuthContext);
   const [error, setError] = useState("");
-  const addPlayerColor = func.httpsCallable("addPlayerColor");
-  const deselectPlayerColor = func.httpsCallable("deselectPlayerColor");
 
-  const setPlayerColor = async (color) => {
-    setError("");
-    try {
-      if (color !== "") {
-        await addPlayerColor({ color: color });
-        setCurrentColor(color);
-      } else {
-        await deselectPlayerColor();
-        setCurrentColor("");
-      }
-    } catch (err) {
-      setError(err.message);
-    }
+  const getNonLoggedInPlayers = func.httpsCallable("getNonLoggedInPlayers");
+  const [playerIds, setPlayerIds] = useState([]);
+  const initPlayerIds = async () => {
+    setPlayerIds((await getNonLoggedInPlayers()).data);
   };
-
-  const getCurrentPlayerColor = func.httpsCallable("getCurrentPlayerColor");
-  const getNonLoggedInColors = func.httpsCallable("getNonLoggedInColors");
-  const [colorMap, setColorMap] = useState([]);
-  const initColorMap = async () => {
-    setColorMap((await getNonLoggedInColors()).data);
-  };
-  const playerCards = colorMap.map(([key, value]) => (
-    <PlayerCard key={key} loggedIn={false} color={value} setColor={null} />
+  const playerCards = playerIds.map((id) => (
+    <PlayerCard
+      key={id}
+      userId={id}
+      loggedIn={false}
+      setError={(err) => setError(err)}
+    />
   ));
 
-  const [currentColor, setCurrentColor] = useState("");
-  const initPlayerColor = async () =>
-    setCurrentColor((await getCurrentPlayerColor()).data);
-
   useEffect(() => {
-    initPlayerColor();
-    initColorMap();
+    initPlayerIds();
   }, []);
 
   return (
@@ -55,8 +39,8 @@ const GameLobby = () => {
         <div id={styles.playerContainer}>
           <PlayerCard
             loggedIn={true}
-            color={currentColor}
-            setColor={setPlayerColor}
+            userId={currentUser.uid}
+            setError={(err) => setError(err)}
           />
           {playerCards}
         </div>

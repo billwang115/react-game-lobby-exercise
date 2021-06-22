@@ -9,6 +9,13 @@
   margin: auto;
 }
 
+.profileImg {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 .cardTitle {
   font-size: 26px;
   color: black;
@@ -17,7 +24,7 @@
 
 .cardContentDivider {
   border: 2px solid #bbb;
-  margin: 26px 0px 36px 0px;
+  margin: 22px 0px 30px 0px;
 }
 
 .dropdown {
