@@ -56,7 +56,7 @@ const PlayerCard = ({ loggedIn, userId, setError }) => {
   }, []);
 
   return (
-    <div style={{ width: loggedIn ? "100%" : "40%" }}>
+    <div className={loggedIn ? styles.loggedInCard : styles.nonLoggedInCard }>
       <div
         className={styles.playerCard}
         style={{

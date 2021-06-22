@@ -101,7 +101,7 @@ const ProfilePage = () => {
                 "Upload new image"
               ) : (
                 <CircularProgress
-                  color="white"
+                  color="inherit"
                   variant="determinate"
                   value={progress}
                 />
@@ -109,7 +109,7 @@ const ProfilePage = () => {
             </button>
           </div>
           <div className={styles.noticeTextContainer}>
-            <p>Note: Only pngs are accepted.</p>
+            <Alert severity="info" style={{ fontSize: "16px"}}>Note: Only pngs are accepted.</Alert>
           </div>
           {error && <Alert severity="error">{error}</Alert>}
           <div className={styles.emailContainer}>

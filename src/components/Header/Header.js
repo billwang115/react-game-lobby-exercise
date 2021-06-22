@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
     padding: "6px 10px",
     margin: "0px 8px",
   },
+  headerTitle: {
+    flexGrow: "1",
+  }
 }));
 
 const Header = () => {
@@ -44,7 +47,7 @@ const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" style={{ flexGrow: "1" }}>
+        <Typography variant="h6" className={classes.headerTitle}>
           React-Game-Lobby
         </Typography>
         <Button className={classes.headerbutton} onClick={handleLobby}>
