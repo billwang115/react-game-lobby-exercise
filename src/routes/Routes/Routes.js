@@ -5,6 +5,7 @@ import PrivateRoute from "./PrivateRoute";
 import GameLobby from "../../components/GameLobbyPage/GameLobby";
 import SignIn from "../../components/LoginPage/SignIn";
 import SignUp from "../../components/LoginPage/SignUp";
+import ProfilePage from "../../components/ProfilePage/ProfilePage";
 
 export default function Routes() {
   return (
@@ -12,6 +13,9 @@ export default function Routes() {
       <Switch>
         <PrivateRoute exact path="/">
           <GameLobby />
+        </PrivateRoute>
+        <PrivateRoute exact path="/profile">
+          <ProfilePage />
         </PrivateRoute>
         <Route exact path="/login">
           <SignIn />

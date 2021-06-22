@@ -6,8 +6,18 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Alert from "@material-ui/lab/Alert";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  headerbutton: {
+    color: "inherit",
+    padding: "6px 10px",
+    margin: "0px 8px",
+  },
+}));
 
 const Header = () => {
+  const classes = useStyles();
   const [error, setError] = useState("");
   const { logout } = useContext(AuthContext);
   const history = useHistory();
@@ -23,13 +33,27 @@ const Header = () => {
     }
   };
 
+  const handleProfile = () => {
+    history.push("/profile");
+  };
+
+  const handleLobby = () => {
+    history.push("/");
+  };
+
   return (
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" style={{ flexGrow: "1" }}>
           React-Game-Lobby
         </Typography>
-        <Button color="inherit" onClick={handleLogout}>
+        <Button className={classes.headerbutton} onClick={handleLobby}>
+          Lobby
+        </Button>
+        <Button className={classes.headerbutton} onClick={handleProfile}>
+          Profile
+        </Button>
+        <Button className={classes.headerbutton} onClick={handleLogout}>
           Logout
         </Button>
       </Toolbar>
